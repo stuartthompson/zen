@@ -1,0 +1,6 @@
+# Git ignore
+# Specifies patterns of files and folders for git to ignore.
+
+# Build output folders
+build
+dist
