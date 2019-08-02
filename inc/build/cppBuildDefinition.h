@@ -9,10 +9,8 @@ class CppBuildDefinition
 public:
     /**
      * Initializes a new c++ build definition.
-     * 
-     * @param filePath The file path of the build definition file.
      */
-    CppBuildDefinition(const std::string& buildDefFileName);
+    CppBuildDefinition();
 
     /**
      * Initializes a new c++ build definition from an existing build definition.
@@ -22,12 +20,11 @@ public:
     CppBuildDefinition(const CppBuildDefinition& definition);
 
     /**
-     * Writes a build definition to an output stream.
+     * Loads the build definition file.
      * 
-     * @param os The output stream to write to.
-     * @param def The build definition to write.
+     * @param filePath The file path of the build definition file.
      */
-    friend std::ostream& operator<<(std::ostream& os, const CppBuildDefinition& def);
+    const bool loadBuildDef(const std::string& buildDefFilePath);
 
     /**
      * Builds the list of include directives to send to the compiler.
@@ -51,11 +48,12 @@ public:
     const std::string getLibraryDirectives() const;
 
     /**
-     * Evaluates the specified source directories and resolves the list of source files.
+     * Writes a build definition to an output stream.
      * 
-     * @return The list of source files to build.
+     * @param os The output stream to write to.
+     * @param def The build definition to write.
      */
-    const std::vector<std::string> resolveSources() const;
+    friend std::ostream& operator<<(std::ostream& os, const CppBuildDefinition& def);
 
     const std::string getCompiler() const;
     const std::string getCflags() const;
@@ -64,6 +62,7 @@ public:
     const std::vector<std::string> getSources() const;
     const std::vector<std::string> getLibraryPaths() const;
     const std::vector<std::string> getLibraries() const;
+    const bool isValid() const;
 
 private:
     std::string compiler_;
@@ -73,4 +72,5 @@ private:
     std::vector<std::string> sources_;
     std::vector<std::string> libraryPaths_;
     std::vector<std::string> libraries_;
+    bool isValid_;
 };

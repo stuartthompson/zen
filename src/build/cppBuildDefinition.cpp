@@ -15,7 +15,12 @@ const std::string DEFAULT_OUTPUT_TYPE = "program";
 const std::string DEFAULT_COMPILER = "g++";
 const std::string DEFAULT_CFLAGS = "-std=c++17";
 
-CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
+CppBuildDefinition::CppBuildDefinition()
+    : isValid_(false)
+{
+}
+
+const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
 {   
     const std::string OutputTypeProperty = "outputType";
     const std::string CompilerProperty = "compiler";
@@ -26,10 +31,11 @@ CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
     const std::string LibrariesProperty = "libraries";
 
     // Get file stream to build definition file
-    std::ifstream fs(filePath.c_str());
+    std::ifstream fs(buildDefFilePath.c_str());
     if (!fs.good())
     {
-        std::cerr << "Unable to open build definition file: " << filePath << std::endl;
+        std::cerr << "Unable to open build definition file: " << buildDefFilePath << std::endl;
+        return false;
     }                 
 
     // Read build definition json from file stream
@@ -47,7 +53,7 @@ CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
         else
         {
             this->outputType_ = DEFAULT_OUTPUT_TYPE;
-            std::cout << "Output type specified. Using default value: " << DEFAULT_OUTPUT_TYPE << std::endl;
+            std::cout << "Output type not specified. Using default value: " << DEFAULT_OUTPUT_TYPE << std::endl;
         }
         // Compiler
         if (buildDefJson.count(CompilerProperty) != 0)
@@ -92,9 +98,15 @@ CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
     }
     catch (const json::exception& e)
     {
-        std::cerr << "An error occurred parsing the build definition file: " << filePath << std::endl;
+        std::cerr << "An error occurred parsing the build definition file: " << buildDefFilePath << std::endl;
         std::cerr << "Error message: " << e.what() << std::endl;        
     }
+
+    // TODO: Validate build definition
+    this->isValid_ = true;
+
+    // Build definition loaded successfully
+    return true;
 }
 
 std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
@@ -200,4 +212,9 @@ const std::vector<std::string> CppBuildDefinition::getLibraryPaths() const
 const std::vector<std::string> CppBuildDefinition::getLibraries() const
 {
     return this->libraries_;
+}
+
+const bool CppBuildDefinition::isValid() const
+{
+    return this->isValid_;
 }

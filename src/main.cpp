@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
     // Find command handler
     if (commandName == "build")
     {
-        BuildHandler h = BuildHandler(args);
+        BuildHandler h = BuildHandler(commandName, args);
+        bool result = h.executeCommand();
     }
 
     return 0;
