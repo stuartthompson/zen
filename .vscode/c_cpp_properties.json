@@ -4,6 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
+                "/usr/local/include/boost",
                 "/usr/local/include/nlohmann"
             ],
             "defines": [],
@@ -16,7 +17,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/nlohmann"
+                "/usr/local/include/boost",
+                "/usr/local/include/nlohmann"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",
