@@ -1,7 +1,12 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <sys/stat.h>
+
+#include <boost/filesystem.hpp>
 #include <nlohmann/json.hpp>
+
 #include "../../inc/build/cppBuildDefinition.h"
 
 using json = nlohmann::json;
@@ -12,6 +17,14 @@ const std::string DEFAULT_CFLAGS = "-std=c++17";
 
 CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
 {   
+    const std::string OutputTypeProperty = "outputType";
+    const std::string CompilerProperty = "compiler";
+    const std::string CflagsProperty = "cflags";
+    const std::string IncludePathsProperty = "includePaths";
+    const std::string SourcesProperty = "sources";
+    const std::string LibraryPathsProperty = "libraryPaths";
+    const std::string LibrariesProperty = "libraries";
+
     // Get file stream to build definition file
     std::ifstream fs(filePath.c_str());
     if (!fs.good())
@@ -26,44 +39,55 @@ CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
     // Parse build definition build and provide default values as needed
     try 
     {
-        if (buildDefJson.count("outputType") != 0)
+        // Output Type
+        if (buildDefJson.count(OutputTypeProperty) != 0)
         {
-            this->outputType_ = buildDefJson.at("outputType").get<std::string>();
+            this->outputType_ = buildDefJson.at(OutputTypeProperty).get<std::string>();
         }
         else
         {
             this->outputType_ = DEFAULT_OUTPUT_TYPE;
             std::cout << "Output type specified. Using default value: " << DEFAULT_OUTPUT_TYPE << std::endl;
         }
-        if (buildDefJson.count("compiler") != 0)
+        // Compiler
+        if (buildDefJson.count(CompilerProperty) != 0)
         {
-            this->compiler_ = buildDefJson.at("compiler").get<std::string>();
+            this->compiler_ = buildDefJson.at(CompilerProperty).get<std::string>();
         }
         else
         {
-            buildDefJson["compiler"] = DEFAULT_COMPILER;
+            this->compiler_ = DEFAULT_COMPILER;
             std::cout << "Compiler not specified. Using default value: " << DEFAULT_COMPILER << std::endl;
         }
-        if (buildDefJson.count("cflags") != 0)
+        // Cflags
+        if (buildDefJson.count(CflagsProperty) != 0)
         {
-            this->cflags_ = buildDefJson.at("cflags").get<std::string>();
+            this->cflags_ = buildDefJson.at(CflagsProperty).get<std::string>();
         }
         else
         {
-            buildDefJson["cflags"] = "-std=c++17";
+            this->cflags_ = DEFAULT_CFLAGS;
             std::cout << "Compiler not specified. Using default value: " << DEFAULT_CFLAGS << std::endl;
         }
-        if (buildDefJson.count("includes") != 0)
+        // Include paths
+        if (buildDefJson.count(IncludePathsProperty) != 0)
         {
-            this->includePaths_ = buildDefJson.at("includes").get<std::vector<std::string>>();
+            this->includePaths_ = buildDefJson.at(IncludePathsProperty).get<std::vector<std::string>>();
         }
-        if (buildDefJson.count("sources") != 0)
+        // Sources
+        if (buildDefJson.count(SourcesProperty) != 0)
         {
-            this->sources_ = buildDefJson.at("sources").get<std::vector<std::string>>();
+            this->sources_ = buildDefJson.at(SourcesProperty).get<std::vector<std::string>>();
         }
-        if (buildDefJson.count("libraries") != 0)
+        // Library paths
+        if (buildDefJson.count(LibraryPathsProperty) != 0)
         {
-            this->libraries_ = buildDefJson.at("libraries").get<std::vector<std::string>>();
+            this->libraryPaths_ = buildDefJson.at(LibraryPathsProperty).get<std::vector<std::string>>();
+        }
+        // Libraries
+        if (buildDefJson.count(LibrariesProperty) != 0)
+        {
+            this->libraries_ = buildDefJson.at(LibrariesProperty).get<std::vector<std::string>>();
         }
     }
     catch (const json::exception& e)
@@ -101,6 +125,48 @@ const std::string CppBuildDefinition::getIncludeDirectives() const
     return ss.str();
 }
 
+const std::string CppBuildDefinition::getSourceFileList() const
+{
+    std::stringstream ss;
+    for (std::vector<std::string>::const_iterator i = this->sources_.begin(); i != this->sources_.end(); ++i)
+    {
+        // Is this source a directory?
+        std::string dir = *i;
+        struct stat buf;
+        stat(dir.c_str(), &buf);
+        if (S_ISDIR(buf.st_mode)) {
+            boost::filesystem::path p(dir);
+            boost::filesystem::directory_iterator end_itr;
+
+            // cycle through the directory
+            for (boost::filesystem::directory_iterator itr(p); itr != end_itr; ++itr)
+            {
+                // If it's not a directory, list it. If you want to list directories too, just remove this check.
+                if (is_regular_file(itr->path())) {
+                    // assign current file name to current_file and echo it out to the console.
+                    std::string file = itr->path().string();
+                    ss << file << " ";
+                }
+            }
+        }
+    }
+    return ss.str();
+}
+
+const std::string CppBuildDefinition::getLibraryDirectives() const
+{
+    std::stringstream ss;
+    for (std::vector<std::string>::const_iterator i = this->libraryPaths_.begin(); i != this->libraryPaths_.end(); ++i)
+    {
+        ss << "-L" << *i << " ";
+    }
+    for (std::vector<std::string>::const_iterator i = this->libraries_.begin(); i != this->libraries_.end(); ++i)
+    {
+        ss << "-l" << *i << " ";
+    }
+    return ss.str();
+}
+
 const std::string CppBuildDefinition::getCompiler() const
 {
     return this->compiler_;
@@ -124,6 +190,11 @@ const std::vector<std::string> CppBuildDefinition::getIncludePaths() const
 const std::vector<std::string> CppBuildDefinition::getSources() const
 {
     return this->sources_;
+}
+
+const std::vector<std::string> CppBuildDefinition::getLibraryPaths() const
+{
+    return this->libraryPaths_;
 }
 
 const std::vector<std::string> CppBuildDefinition::getLibraries() const
