@@ -70,8 +70,6 @@ CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
         std::cerr << "An error occurred parsing the build definition file: " << filePath << std::endl;
         std::cerr << "Error message: " << e.what() << std::endl;        
     }
-
-    std::cout << "Parsed build definition file: " << std::endl << *this << std::endl;
 }
 
 std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
