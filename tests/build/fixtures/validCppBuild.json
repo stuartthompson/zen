@@ -2,15 +2,19 @@
     "compiler": "g++",
     "cflags": "-std=c++17 -D_REENTRANT",
     "outputType": "library",
-    "includes": [
-        "path1",
-        "path2/some/place"
+    "includePaths": [
+        "/usr/local/include/nlohmann",
+        "/usr/local/include/cxxtest",
+        "/usr/local/include/boost"
     ],
     "sources": [
-        "file1.cpp",
-        "file2.cpp"
+        "src/build",
+        "src/commands"
+    ],
+    "libraryPaths": [
+        "/usr/local/lib"
     ],
     "libraries": [
-        "lib1"
+        "boost_filesystem"
     ]
 }
