@@ -1,6 +1,11 @@
 #include "../../inc/commands/commandHandler.h"
 
+#include <array>
+#include <cstdio>
 #include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
 
 CommandHandler::CommandHandler(const std::string& command, const std::vector<std::string>& arguments) :
     command_(command), arguments_(arguments)
@@ -57,6 +62,19 @@ bool CommandHandler::isUnarySwitchPresent(const std::string& s) const
 
     // Switch not found
     return false;
+}
+
+std::string CommandHandler::exec(const char* cmd) const {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
 }
 
 const std::string CommandHandler::VerboseSwitch = "-v";

@@ -42,6 +42,13 @@ public:
      */
     bool isUnarySwitchPresent(const std::string& s) const;
 
+    /**
+     * Executes a command and returns the result.
+     * 
+     * @return The result of the command.
+     */
+    std::string exec(const char* cmd) const;
+
 protected:
     static const std::string VerboseSwitch;
 
