@@ -3,11 +3,13 @@
 #include <string>
 #include <vector>
 
-class BuildHandler
+#include "../commands/commandHandler.h"
+
+class BuildHandler : public CommandHandler
 {
 public:
     BuildHandler(const std::vector<std::string>& arguments);
 
 private:
-    std::vector<std::string> arguments_;
+    
 };
