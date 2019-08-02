@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <nlohmann/json.hpp>
 #include "../../inc/build/cppBuildDefinition.h"
 
@@ -54,7 +55,7 @@ CppBuildDefinition::CppBuildDefinition(const std::string& filePath)
         }
         if (buildDefJson.count("includes") != 0)
         {
-            this->includes_ = buildDefJson.at("includes").get<std::vector<std::string>>();
+            this->includePaths_ = buildDefJson.at("includes").get<std::vector<std::string>>();
         }
         if (buildDefJson.count("sources") != 0)
         {
@@ -78,7 +79,7 @@ std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
     os << "Compiler: " << def.compiler_ << std::endl;
     os << "Cflags: " << def.cflags_ << std::endl;
     os << "Includes: ";
-    for (std::vector<std::string>::const_iterator i = def.includes_.begin(); i != def.includes_.end(); ++i) os << *i;
+    for (std::vector<std::string>::const_iterator i = def.includePaths_.begin(); i != def.includePaths_.end(); ++i) os << *i;
     os << std::endl;
     os << "Sources: ";
     for (std::vector<std::string>::const_iterator i = def.sources_.begin(); i != def.sources_.end(); ++i) os << *i;
@@ -87,6 +88,17 @@ std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
     for (std::vector<std::string>::const_iterator i = def.libraries_.begin(); i != def.libraries_.end(); ++i) os << *i;
     os << std::endl;
     return os;
+}
+
+const std::string CppBuildDefinition::getIncludeDirectives() const
+{
+    // Iterate the list of include paths
+    std::stringstream ss;
+    for (std::vector<std::string>::const_iterator i = this->includePaths_.begin(); i != this->includePaths_.end(); ++i)
+    {
+        ss << "-I" << *i << " ";
+    }
+    return ss.str();
 }
 
 const std::string CppBuildDefinition::getCompiler() const
@@ -104,9 +116,9 @@ const std::string CppBuildDefinition::getOutputType() const
     return this->outputType_;
 }
 
-const std::vector<std::string> CppBuildDefinition::getIncludes() const
+const std::vector<std::string> CppBuildDefinition::getIncludePaths() const
 {
-    return this->includes_;
+    return this->includePaths_;
 }
 
 const std::vector<std::string> CppBuildDefinition::getSources() const

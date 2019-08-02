@@ -2,16 +2,27 @@
 
 #include <iostream>
 
-CommandHandler::CommandHandler(const std::vector<std::string>& arguments) :
-    arguments_(arguments)
+CommandHandler::CommandHandler(const std::string& command, const std::vector<std::string>& arguments) :
+    command_(command), arguments_(arguments)
 {
-    // Emit arguments (TODO: Remove when no longer useful)
-    std::cout << "Args: " << arguments.size() << std::endl;
-    for (std::vector<std::string>::const_iterator i = this->arguments_.begin(); i != this->arguments_.end(); ++i) 
+    // Check for verbose mode
+    if (isUnarySwitchPresent(CommandHandler::VerboseSwitch))
     {
-        std::cout << *i << std::endl;
+        std::cout << *this;
+    }
+}
+
+std::ostream& operator<< (std::ostream& os, const CommandHandler& h)
+{
+    // Emit command and list of arguments
+    os << "Command: " << h.command_ << std::endl;
+    os << "Arguments (Count: " << h.arguments_.size() << ")" << std::endl;
+    for (int i = 0; i < h.arguments_.size(); i++)
+    {
+        os << "  [" << i+1 << "]: " << h.arguments_[i] << std::endl;
     }
 
+    return os;
 }
 
 std::string CommandHandler::findSwitchValue(const std::string& s) const
@@ -47,3 +58,5 @@ bool CommandHandler::isUnarySwitchPresent(const std::string& s) const
     // Switch not found
     return false;
 }
+
+const std::string CommandHandler::VerboseSwitch = "-v";

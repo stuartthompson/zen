@@ -4,8 +4,8 @@
 #include "../../inc/build/buildHandler.h"
 #include "../../inc/commands/commandHandler.h"
 
-BuildHandler::BuildHandler(const std::vector<std::string>& arguments) :
-    CommandHandler(arguments) 
+BuildHandler::BuildHandler(const std::string& command, const std::vector<std::string>& arguments) :
+    CommandHandler(command, arguments) 
 {
     const std::string SWITCH_VERBOSE = "-v";
     const std::string SWITCH_FILE_PATH = "-f";

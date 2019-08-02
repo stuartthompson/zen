@@ -53,7 +53,7 @@ public:
     const std::string getCompiler() const;
     const std::string getCflags() const;
     const std::string getOutputType() const;
-    const std::vector<std::string> getIncludes() const;
+    const std::vector<std::string> getIncludePaths() const;
     const std::vector<std::string> getSources() const;
     const std::vector<std::string> getLibraries() const;
 
@@ -61,7 +61,7 @@ private:
     std::string compiler_;
     std::string cflags_;
     std::string outputType_;
-    std::vector<std::string> includes_;
+    std::vector<std::string> includePaths_;
     std::vector<std::string> sources_;
     std::vector<std::string> libraries_;
 };
