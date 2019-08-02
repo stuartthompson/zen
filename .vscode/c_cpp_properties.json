@@ -16,7 +16,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/nlohmann"
+                "/usr/local/include/nlohmann"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

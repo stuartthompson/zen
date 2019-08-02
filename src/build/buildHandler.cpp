@@ -1,21 +1,27 @@
 #include <iostream>
+#include <string>
 
 #include "../../inc/build/buildHandler.h"
+#include "../../inc/commands/commandHandler.h"
 
 BuildHandler::BuildHandler(const std::vector<std::string>& arguments) :
-    arguments_(arguments) 
+    CommandHandler(arguments) 
 {
-    // Emit arguments (TODO: Remove when no longer useful)
-    std::cout << "Args: " << std::endl;
-    for (std::vector<std::string>::const_iterator i = this->arguments_.begin(); i != this->arguments_.end(); ++i) 
-    {
-        std::cout << *i << std::endl;
-    }
+    const std::string SWITCH_VERBOSE = "-v";
+    const std::string SWITCH_FILE_PATH = "-f";
+
+    // Check for -v (verbose) unary switch
+    bool verboseMode = isUnarySwitchPresent(SWITCH_VERBOSE);
 
     // Look for a -f argument with associated build file path
-
-
-    // Look for a .zbuild file
-
+    std::string buildFilePath = findSwitchValue(SWITCH_FILE_PATH);
+    // Set a default if no build file path was specified
+    if (buildFilePath == "")
+    {
+        buildFilePath = ".zbuild";
+    }
+    
+    std::cout << "Verbose mode: " << verboseMode << std::endl;
+    std::cout << "Build file path: " << buildFilePath << std::endl;
 }
 

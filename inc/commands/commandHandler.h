@@ -13,11 +13,21 @@ public:
      * 
      * Switch arguments come in pairs, one for the switch and the other for the value, i.e. -f .zbuild
      * 
-     * @param s The switch name.
-     * @return The switch value. Null if switch value was not provided.
+     * @param s The switch to find.
+     * @return The switch value or an empty string if the switch value was not provided.
      */
     std::string findSwitchValue(const std::string& s) const;
 
-private:
+    /**
+     * Checks if a unary switch was provided.
+     * 
+     * Unary switches have no associated value. For example the -v switch is often provided to indicate verbose mode.
+     * 
+     * @param s The switch to check for.
+     * @return True if the switch is present, false otherwise.
+     */
+    bool isUnarySwitchPresent(const std::string& s) const;
+
+protected:
     std::vector<std::string> arguments_;
 };
