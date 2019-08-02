@@ -9,7 +9,7 @@ using json = nlohmann::json;
 
 int main(int argc, char *argv[])
 {
-    std::ifstream i("testDef.json");
+   std::ifstream i("testDef.json");
     json j;
     i >> j;
 
@@ -25,8 +25,4 @@ int main(int argc, char *argv[])
     std::cout << "I2" << vec[1] << std::endl;
 
     CppBuildDefinition def = CppBuildDefinition("testDef.json");
-
-
-
-    //auto d = j.get<CppBuildDef>();
 }
