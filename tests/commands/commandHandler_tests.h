@@ -9,9 +9,7 @@
 
 using json = nlohmann::json;
 
-const std::string FIXTURE_VALID_CPP_BUILD = "validCppBuild.json";
-
-class CppBuildDefinitionTests : public CxxTest::TestSuite
+class CommandHandlerTests : public CxxTest::TestSuite
 {
 public:
     /**
@@ -22,7 +20,7 @@ public:
         std::vector<std::string> args;
         args.push_back("-f");
         args.push_back("file1");
-        CommandHandler ch = CommandHandler(args);
+        CommandHandler ch = CommandHandler("build", args);
 
         std::string fVal = ch.findSwitchValue("-f");
         TS_ASSERT_EQUALS(fVal, "file1");
@@ -35,7 +33,7 @@ public:
     {
         std::vector<std::string> args;
         args.push_back("-f");
-        CommandHandler ch = CommandHandler(args);
+        CommandHandler ch = CommandHandler("build", args);
 
         std::string fVal = ch.findSwitchValue("-f");
         TS_ASSERT_EQUALS(fVal, "");

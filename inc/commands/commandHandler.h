@@ -6,7 +6,21 @@
 class CommandHandler
 {
 public:
-    CommandHandler(const std::vector<std::string>& arguments);
+    /**
+     * Initializes a new command handler.
+     * 
+     * @param command The name of the command being run.
+     * @param arguments The list of arguments supplied to the command.
+     */
+    CommandHandler(const std::string& command, const std::vector<std::string>& arguments);
+
+    /**
+     * Writes the command to an output stream.
+     * 
+     * @param os The output stream to write to.
+     * @param h The command handler.
+     */
+    friend std::ostream& operator<<(std::ostream& os, const CommandHandler& h);
 
     /**
      * Finds the value of a switch argument provided to the command.
@@ -29,5 +43,8 @@ public:
     bool isUnarySwitchPresent(const std::string& s) const;
 
 protected:
+    static const std::string VerboseSwitch;
+
+    std::string command_;
     std::vector<std::string> arguments_;
 };

@@ -8,7 +8,7 @@
 class BuildHandler : public CommandHandler
 {
 public:
-    BuildHandler(const std::vector<std::string>& arguments);
+    BuildHandler(const std::string& commandName, const std::vector<std::string>& arguments);
 
 private:
     
