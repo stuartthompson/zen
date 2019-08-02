@@ -1,6 +1,7 @@
 {
     "compiler": "g++",
     "cflags": "-std=c++17 -D_REENTRANT",
+    "outputType": "library",
     "includes": [
         "file1.h",
         "file2.h"
@@ -8,5 +9,8 @@
     "sources": [
         "file1.cpp",
         "file2.cpp"
+    ],
+    "libraries": [
+        "lib1"
     ]
 }
