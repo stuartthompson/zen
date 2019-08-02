@@ -15,11 +15,40 @@ public:
     CppBuildDefinition(const std::string& buildDefFileName);
 
     /**
-     * Copy constructor.
+     * Initializes a new c++ build definition from an existing build definition.
+     * 
+     * @param definition The definition to initialize from.
      */
     CppBuildDefinition(const CppBuildDefinition& definition);
 
+    /**
+     * Writes a build definition to an output stream.
+     * 
+     * @param os The output stream to write to.
+     * @param def The build definition to write.
+     */
     friend std::ostream& operator<<(std::ostream& os, const CppBuildDefinition& def);
+
+    /**
+     * Builds the list include directives to send to the compiler.
+     * 
+     * @return A string representing the include directives that will be provided to the compiler.
+     */
+    const std::string getIncludeDirectives() const;
+
+    /**
+     * Builds the list of library directives to send to the compiler.
+     * 
+     * @return A string representing the library directives that will be provided to the compiler.
+     */
+    const std::string getLibraryDirectives() const;
+
+    /**
+     * Evaluates the specified source directories and resolves the list of source files.
+     * 
+     * @return The list of source files to build.
+     */
+    const std::vector<std::string> resolveSources() const;
 
     const std::string getCompiler() const;
     const std::string getCflags() const;

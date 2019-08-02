@@ -23,5 +23,8 @@ BuildHandler::BuildHandler(const std::vector<std::string>& arguments) :
     
     std::cout << "Verbose mode: " << verboseMode << std::endl;
     std::cout << "Build file path: " << buildFilePath << std::endl;
+
+    // Parse the build file
+    
 }
 
