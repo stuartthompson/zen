@@ -2,6 +2,7 @@
 #include <string>
 
 #include "../../inc/build/buildHandler.h"
+#include "../../inc/build/cppBuildDefinition.h"
 #include "../../inc/commands/commandHandler.h"
 
 BuildHandler::BuildHandler(const std::string& command, const std::vector<std::string>& arguments) :
@@ -24,7 +25,11 @@ BuildHandler::BuildHandler(const std::string& command, const std::vector<std::st
     std::cout << "Verbose mode: " << verboseMode << std::endl;
     std::cout << "Build file path: " << buildFilePath << std::endl;
 
+    CppBuildDefinition buildDef = CppBuildDefinition(buildFilePath);
+
     // Parse the build file
-    
+    std::string inc = buildDef.getIncludeDirectives();
+    std::string src = buildDef.getSourceFileList();
+    std::string src = buildDef.getLibraryDirectives();
 }
 

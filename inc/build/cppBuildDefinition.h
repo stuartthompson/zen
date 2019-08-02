@@ -30,11 +30,18 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const CppBuildDefinition& def);
 
     /**
-     * Builds the list include directives to send to the compiler.
+     * Builds the list of include directives to send to the compiler.
      * 
      * @return A string representing the include directives that will be provided to the compiler.
      */
     const std::string getIncludeDirectives() const;
+
+    /**
+     * Builds the list of source files.
+     * 
+     * @return A string representing the source files that will be provided to the compiler.
+     */
+    const std::string getSourceFileList() const;
 
     /**
      * Builds the list of library directives to send to the compiler.
@@ -55,6 +62,7 @@ public:
     const std::string getOutputType() const;
     const std::vector<std::string> getIncludePaths() const;
     const std::vector<std::string> getSources() const;
+    const std::vector<std::string> getLibraryPaths() const;
     const std::vector<std::string> getLibraries() const;
 
 private:
@@ -63,5 +71,6 @@ private:
     std::string outputType_;
     std::vector<std::string> includePaths_;
     std::vector<std::string> sources_;
+    std::vector<std::string> libraryPaths_;
     std::vector<std::string> libraries_;
 };
