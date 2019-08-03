@@ -1,0 +1,23 @@
+{
+    "compiler": "g++",
+    "cflags": "-std=c++17 -D_REENTRANT",
+    "outputType": "program",
+    "output": "zen",
+    "includePaths": [
+        "/usr/local/include/nlohmann",
+        "/usr/local/include/cxxtest",
+        "/usr/local/include/boost"
+    ],
+    "sources": [
+        "src",
+        "src/build",
+        "src/commands"
+    ],
+    "libraryPaths": [
+        "/usr/local/lib"
+    ],
+    "libraries": [
+        "boost_filesystem",
+        "boost_system"
+    ]
+}
