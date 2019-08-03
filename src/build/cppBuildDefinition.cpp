@@ -11,9 +11,10 @@
 
 using json = nlohmann::json;
 
-const std::string DEFAULT_OUTPUT_TYPE = "program";
+const std::string DEFAULT_BUILD_TYPE = "program";
 const std::string DEFAULT_COMPILER = "g++";
 const std::string DEFAULT_CFLAGS = "-std=c++17";
+const std::string DEFAULT_OUTPUT = "a.out";
 
 CppBuildDefinition::CppBuildDefinition()
     : isValid_(false)
@@ -22,9 +23,10 @@ CppBuildDefinition::CppBuildDefinition()
 
 const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
 {   
-    const std::string OutputTypeProperty = "outputType";
+    const std::string BuildTypeProperty = "buildType";
     const std::string CompilerProperty = "compiler";
     const std::string CflagsProperty = "cflags";
+    const std::string OutputProperty = "output";
     const std::string IncludePathsProperty = "includePaths";
     const std::string SourcesProperty = "sources";
     const std::string LibraryPathsProperty = "libraryPaths";
@@ -46,14 +48,14 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
     try 
     {
         // Output Type
-        if (buildDefJson.count(OutputTypeProperty) != 0)
+        if (buildDefJson.count(BuildTypeProperty) != 0)
         {
-            this->outputType_ = buildDefJson.at(OutputTypeProperty).get<std::string>();
+            this->buildType_ = buildDefJson.at(BuildTypeProperty).get<std::string>();
         }
         else
         {
-            this->outputType_ = DEFAULT_OUTPUT_TYPE;
-            std::cout << "Output type not specified. Using default value: " << DEFAULT_OUTPUT_TYPE << std::endl;
+            this->buildType_ = DEFAULT_BUILD_TYPE;
+            std::cout << "Output type not specified. Using default value: " << DEFAULT_BUILD_TYPE << std::endl;
         }
         // Compiler
         if (buildDefJson.count(CompilerProperty) != 0)
@@ -74,6 +76,16 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
         {
             this->cflags_ = DEFAULT_CFLAGS;
             std::cout << "Compiler not specified. Using default value: " << DEFAULT_CFLAGS << std::endl;
+        }
+        // Output
+        if (buildDefJson.count(OutputProperty) != 0)
+        {
+            this->output_ = buildDefJson.at(OutputProperty).get<std::string>();
+        }
+        else
+        {
+            // TODO: Consider different default output for libs vs programs
+            this->output_ = DEFAULT_OUTPUT;
         }
         // Include paths
         if (buildDefJson.count(IncludePathsProperty) != 0)
@@ -111,9 +123,10 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
 
 std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
 {
-    os << "Output type: " << def.outputType_ << std::endl;
+    os << "Build type: " << def.buildType_ << std::endl;
     os << "Compiler: " << def.compiler_ << std::endl;
     os << "Cflags: " << def.cflags_ << std::endl;
+    os << "Output: " << def.output_ << std::endl;
     os << "Includes: ";
     for (std::vector<std::string>::const_iterator i = def.includePaths_.begin(); i != def.includePaths_.end(); ++i) os << *i;
     os << std::endl;
@@ -179,6 +192,18 @@ const std::string CppBuildDefinition::getLibraryDirectives() const
     return ss.str();
 }
 
+const std::string CppBuildDefinition::getOutputDirective() const
+{
+    std::stringstream ss;
+    ss << "-o " << this->output_;
+    return ss.str();
+}
+
+const std::string CppBuildDefinition::getBuildType() const
+{
+    return this->buildType_;
+}
+
 const std::string CppBuildDefinition::getCompiler() const
 {
     return this->compiler_;
@@ -189,9 +214,9 @@ const std::string CppBuildDefinition::getCflags() const
     return this->cflags_;
 }
 
-const std::string CppBuildDefinition::getOutputType() const
+const std::string CppBuildDefinition::getOutput() const
 {
-    return this->outputType_;
+    return this->output_;
 }
 
 const std::vector<std::string> CppBuildDefinition::getIncludePaths() const
