@@ -12,7 +12,8 @@
         "src",
         "src/build",
         "src/command",
-        "src/git"
+        "src/git",
+        "src/regex"
     ],
     "libraryPaths": [
         "/usr/local/lib"
