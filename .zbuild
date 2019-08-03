@@ -1,7 +1,7 @@
 {
+    "buildType": "program",
     "compiler": "g++",
     "cflags": "-std=c++17 -D_REENTRANT",
-    "outputType": "program",
     "output": "zen",
     "includePaths": [
         "/usr/local/include/nlohmann",
@@ -11,7 +11,8 @@
     "sources": [
         "src",
         "src/build",
-        "src/commands"
+        "src/command",
+        "src/git"
     ],
     "libraryPaths": [
         "/usr/local/lib"
