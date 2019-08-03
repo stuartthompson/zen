@@ -48,6 +48,13 @@ public:
     const std::string getLibraryDirectives() const;
 
     /**
+     * Gets the output directive to send to the compiler.
+     * 
+     * @return A string representing the output directive that will be provided to the compiler.
+     */
+    const std::string getOutputDirective() const;
+
+    /**
      * Writes a build definition to an output stream.
      * 
      * @param os The output stream to write to.
@@ -55,9 +62,10 @@ public:
      */
     friend std::ostream& operator<<(std::ostream& os, const CppBuildDefinition& def);
 
+    const std::string getBuildType() const;
     const std::string getCompiler() const;
     const std::string getCflags() const;
-    const std::string getOutputType() const;
+    const std::string getOutput() const;
     const std::vector<std::string> getIncludePaths() const;
     const std::vector<std::string> getSources() const;
     const std::vector<std::string> getLibraryPaths() const;
@@ -65,9 +73,10 @@ public:
     const bool isValid() const;
 
 private:
+    std::string buildType_;
     std::string compiler_;
     std::string cflags_;
-    std::string outputType_;
+    std::string output_;
     std::vector<std::string> includePaths_;
     std::vector<std::string> sources_;
     std::vector<std::string> libraryPaths_;

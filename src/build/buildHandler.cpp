@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "../../inc/build/buildHandler.h"
 #include "../../inc/build/cppBuildDefinition.h"
@@ -62,6 +63,21 @@ bool BuildHandler::executeBuild() const
     std::string src = this->buildDef_.getSourceFileList();
     std::string lib = this->buildDef_.getLibraryDirectives();
 
+    // Construct build command
+    std::stringstream ss;
+    ss << this->buildDef_.getCompiler() << " ";
+    ss << this->buildDef_.getSourceFileList();
+    ss << this->buildDef_.getIncludeDirectives();
+    ss << this->buildDef_.getLibraryDirectives();
+    ss << this->buildDef_.getOutputDirective() << " ";
+    ss << this->buildDef_.getCflags();
+
+    std::string command = ss.str();
+
     // Execute the build
-    
+    std::cout << command << std::endl;
+
+    std::string output = this->exec(command.c_str());
+
+    std::cout << "Result: " << output << std::endl;
 }
