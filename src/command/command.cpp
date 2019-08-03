@@ -1,4 +1,4 @@
-#include "../../inc/commands/commandHandler.h"
+#include "../../inc/command/command.h"
 
 #include <array>
 #include <cstdio>
@@ -7,17 +7,17 @@
 #include <stdexcept>
 #include <string>
 
-CommandHandler::CommandHandler(const std::string& command, const std::vector<std::string>& arguments) :
+Command::Command(const std::string& command, const std::vector<std::string>& arguments) :
     command_(command), arguments_(arguments)
 {
     // Check for verbose mode
-    if (isUnarySwitchPresent(CommandHandler::VerboseSwitch))
+    if (isUnarySwitchPresent(Command::VerboseSwitch))
     {
         std::cout << *this;
     }
 }
 
-std::ostream& operator<< (std::ostream& os, const CommandHandler& h)
+std::ostream& operator<< (std::ostream& os, const Command& h)
 {
     // Emit command and list of arguments
     os << "Command: " << h.command_ << std::endl;
@@ -30,7 +30,7 @@ std::ostream& operator<< (std::ostream& os, const CommandHandler& h)
     return os;
 }
 
-std::string CommandHandler::findSwitchValue(const std::string& s) const
+std::string Command::findSwitchValue(const std::string& s) const
 {
     // Search for the switch
     for (std::vector<std::string>::const_iterator i = this->arguments_.begin(); i != this->arguments_.end(); ++i) 
@@ -49,7 +49,7 @@ std::string CommandHandler::findSwitchValue(const std::string& s) const
     return "";
 }
 
-bool CommandHandler::isUnarySwitchPresent(const std::string& s) const
+bool Command::isUnarySwitchPresent(const std::string& s) const
 {
     for (std::vector<std::string>::const_iterator i = this->arguments_.begin(); i != this->arguments_.end(); ++i) 
     {
@@ -64,7 +64,7 @@ bool CommandHandler::isUnarySwitchPresent(const std::string& s) const
     return false;
 }
 
-std::string CommandHandler::exec(const char* cmd) const {
+std::string Command::exec(const char* cmd) const {
     std::array<char, 128> buffer;
     std::string result;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
@@ -77,4 +77,4 @@ std::string CommandHandler::exec(const char* cmd) const {
     return result;
 }
 
-const std::string CommandHandler::VerboseSwitch = "-v";
+const std::string Command::VerboseSwitch = "-v";
