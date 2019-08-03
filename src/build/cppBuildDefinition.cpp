@@ -55,7 +55,7 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
         else
         {
             this->buildType_ = DEFAULT_BUILD_TYPE;
-            std::cout << "Output type not specified. Using default value: " << DEFAULT_BUILD_TYPE << std::endl;
+            std::cout << "Build type not specified. Using default value: " << DEFAULT_BUILD_TYPE << std::endl;
         }
         // Compiler
         if (buildDefJson.count(CompilerProperty) != 0)
