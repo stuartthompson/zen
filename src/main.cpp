@@ -5,7 +5,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "../inc/build/buildHandler.h"
+#include "../inc/build/buildCommand.h"
+#include "../inc/git/gitCommand.h"
 
 using json = nlohmann::json;
 
@@ -21,7 +22,6 @@ int main(int argc, char *argv[])
 
     // Get command name
     std::string commandName = argv[1];
-    std::cout << "Command: " << commandName << std::endl;
 
     // Convert remaining arguments to vector
     std::vector<std::string> args;
@@ -32,8 +32,12 @@ int main(int argc, char *argv[])
     // Find command handler
     if (commandName == "build")
     {
-        BuildHandler h = BuildHandler(commandName, args);
-        bool result = h.executeCommand();
+        bool result = BuildCommand(commandName, args).execute();;
+    }
+
+    if (commandName == "git")
+    {
+        bool result = GitCommand(commandName, args).execute();;
     }
 
     return 0;

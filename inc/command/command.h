@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-class CommandHandler
+class Command
 {
 public:
     /**
@@ -12,7 +12,7 @@ public:
      * @param command The name of the command being run.
      * @param arguments The list of arguments supplied to the command.
      */
-    CommandHandler(const std::string& command, const std::vector<std::string>& arguments);
+    Command(const std::string& command, const std::vector<std::string>& arguments);
 
     /**
      * Writes the command to an output stream.
@@ -20,7 +20,7 @@ public:
      * @param os The output stream to write to.
      * @param h The command handler.
      */
-    friend std::ostream& operator<<(std::ostream& os, const CommandHandler& h);
+    friend std::ostream& operator<<(std::ostream& os, const Command& h);
 
     /**
      * Finds the value of a switch argument provided to the command.

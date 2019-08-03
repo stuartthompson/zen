@@ -2,12 +2,12 @@
 #include <string>
 #include <sstream>
 
-#include "../../inc/build/buildHandler.h"
+#include "../../inc/build/buildCommand.h"
 #include "../../inc/build/cppBuildDefinition.h"
-#include "../../inc/commands/commandHandler.h"
+#include "../../inc/command/command.h"
 
-BuildHandler::BuildHandler(const std::string& command, const std::vector<std::string>& arguments) :
-    CommandHandler(command, arguments) 
+BuildCommand::BuildCommand(const std::string& command, const std::vector<std::string>& arguments) :
+    Command(command, arguments) 
 {
     const std::string SWITCH_VERBOSE = "-v";
     const std::string SWITCH_FILE_PATH = "-f";
@@ -22,12 +22,9 @@ BuildHandler::BuildHandler(const std::string& command, const std::vector<std::st
     {
         this->buildFilePath_ = ".zbuild";
     }
-    
-    std::cout << "Verbose mode: " << verboseMode << std::endl;
-    std::cout << "Build file path: " << this->buildFilePath_ << std::endl;
 }
 
-bool BuildHandler::executeCommand()
+bool BuildCommand::execute()
 {
     bool ok = this->loadBuildDefinition();
     if (!ok)
@@ -36,10 +33,10 @@ bool BuildHandler::executeCommand()
     }
 
     // Return execution result
-    return this->executeBuild();;
+    return this->runBuild();;
 }
 
-bool BuildHandler::loadBuildDefinition()
+bool BuildCommand::loadBuildDefinition()
 {
     bool ok = this->buildDef_.loadBuildDef(this->buildFilePath_);
     if (!ok)
@@ -56,7 +53,7 @@ bool BuildHandler::loadBuildDefinition()
     return true;
 }
 
-bool BuildHandler::executeBuild() const
+bool BuildCommand::runBuild() const
 {
     // Get the build parameters
     std::string inc = this->buildDef_.getIncludeDirectives();
