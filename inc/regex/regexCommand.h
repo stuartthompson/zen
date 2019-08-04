@@ -15,4 +15,5 @@ public:
 private:
     void handleMatchCommand() const;
     bool isMatch(const std::string& input, const std::string& regex) const;
+    void getMatches(const std::string& input, const std::string& regex) const;
 };
