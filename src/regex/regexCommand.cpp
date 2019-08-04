@@ -50,17 +50,8 @@ void RegexCommand::handleMatchCommand() const
 
     // TODO: Figure out what to do here. Hacked this. Got tired. Leaving it for now.
 
-    // std::string input = this->arguments_[1];
-    // std::string regex = this->arguments_[2];
-
-    std::stringstream ss;
-    ss << "Pruning origin" << std::endl;
-    ss << "URL: git@github.com:stuartthompson/zen.git" << std::endl;
-    ss << " * [pruned] origin/build" << std::endl;
-    ss << " * [pruned] origin/git" << std::endl;
-    std::string input = ss.str();
-
-    std::string regex = R"([\]] (.*)$)";
+    std::string input = this->arguments_[1];
+    std::string regex = this->arguments_[2];
 
     // Split the input into separate lines
     std::vector<std::string> lines = splitter(R"(\n)", input);

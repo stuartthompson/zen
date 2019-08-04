@@ -32,25 +32,19 @@ bool GitCommand::execute()
 
 std::vector<std::string> GitCommand::pruneRemotes() const
 {
-    // std::string result = this->exec("git remote prune origin");
-    // std::cout << result << std::endl;
+    std::string pruneResult = this->exec("git remote prune origin");
+    std::cout << pruneResult << std::endl;
     
-    std::stringstream ss;
-    ss << "Pruning origin" << std::endl;
-    ss << "URL: git@github.com:stuartthompson/zen.git" << std::endl;
-    ss << " * [pruned] origin/build" << std::endl;
-    ss << " * [pruned] origin/git" << std::endl;
-    std::string result = ss.str();
-
     // TODO: Clean this up. There is a lot that can be optimized/refactored here.
 
     // Split result into separate lines
     std::vector<std::string> lines;
     std::regex pattern(R"(\n)");
-    std::copy(std::sregex_token_iterator(result.begin(), result.end(), pattern, -1),
+    std::copy(std::sregex_token_iterator(pruneResult.begin(), pruneResult.end(), pattern, -1),
         std::sregex_token_iterator(),back_inserter(lines));
 
     // This regex attempts to match anything following a closing ] and a space
+    // The git remote prune origin command returns lines such as * [pruned] origin/branchName
     std::string regex = R"([\]] (.*)$)";
 
     // List of pruned branches
@@ -77,9 +71,25 @@ std::vector<std::string> GitCommand::pruneRemotes() const
 
 void GitCommand::deleteLocalBranches(const std::vector<std::string>& branches) const
 {
+    // TODO: Abstract regex facilities into a separate method or class
+    // This regex should put the branch name without the preceeding origin/ into the second match
+    std::string regex = R"(^.*[/](.*)$))";
+    std::regex r(regex);
+
     std::cout << "Branches to delete:" << std::endl;
     for (std::vector<std::string>::const_iterator i = branches.begin(); i != branches.end(); ++i)
     {
-        std::cout << *i << std::endl;
+        std::smatch matches;
+        std::regex_search(*i, matches, r);
+
+        if (matches.size() == 2)
+        {
+            // Delete the local branch
+            std::cout << "Deleting branch: " << matches[1] << std::endl;
+            // Build command
+            std::stringstream ss;
+            ss << "git branch -d " << matches[1];
+            this->exec(ss.str().c_str());
+        }
     }
 }
