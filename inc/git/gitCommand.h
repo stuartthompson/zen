@@ -15,8 +15,11 @@ public:
 private:
     /**
      * Prunes remote branches ('git remote prune origin') and returns the names of pruned branches.
+     * 
+     * @param prunedBranches A vector that will be populated with the list of pruned branches.
+     * @return True if branches were pruned, false otherwise.
      */
-    std::vector<std::string> pruneRemotes() const;
+    bool pruneRemotes(std::vector<std::string>& prunedBranches) const;
 
     /**
      * Deletes local branches.
