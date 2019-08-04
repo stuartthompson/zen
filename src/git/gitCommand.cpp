@@ -29,47 +29,54 @@ bool GitCommand::execute()
 
 std::vector<std::string> GitCommand::pruneRemotes() const
 {
-    std::string result = this->exec("git remote prune origin");
-    std::cout << result << std::endl;
+    // std::string result = this->exec("git remote prune origin");
+    // std::cout << result << std::endl;
     
-    // std::stringstream ss;
-    // ss << "Pruning origin" << std::endl;
-    // ss << "URL: git@github.com:stuartthompson/zen.git" << std::endl;
-    // ss << " * [pruned] origin/build" << std::endl;
-    // ss << " * [pruned] origin/git" << std::endl;
-    // std::string res = ss.str();
+    std::stringstream ss;
+    ss << "Pruning origin" << std::endl;
+    ss << "URL: git@github.com:stuartthompson/zen.git" << std::endl;
+    ss << " * [pruned] origin/build" << std::endl;
+    ss << " * [pruned] origin/git" << std::endl;
+    std::string result = ss.str();
 
-    // Pruned matches
-    //std::string matchStr = ".\\[pruned\\]\\s*([^\\n\\r]*)";
+    // TODO: Clean this up. There is a lot that can be optimized/refactored here.
 
-    //res = " * [pruned] origin/build";
-    // std::string matchStr = R"#(
-    //     (.*)\r\n
-    // )#";
+    // Split result into separate lines
+    std::vector<std::string> lines;
+    std::regex pattern(R"(\n)");
+    std::copy(std::sregex_token_iterator(result.begin(), result.end(), pattern, -1),
+        std::sregex_token_iterator(),back_inserter(lines));
 
-    // std::cout << "Testing matches for match string " << matchStr << " against " << std::endl << res << std::endl;
+    // This regex attempts to match anything following a closing ] and a space
+    std::string regex = R"([\]] (.*)$)";
 
-    // std::regex m(matchStr);
-    // if (regex_match(res, m))
-    // {
-    //     std::cout << "Yeah, it matches.";        
-    // }
-    // else
-    // {
-    //     std::cout << "No match";
-    // }
-    
-
-    // TODO: Actually return the pruned branches
+    // List of pruned branches
     std::vector<std::string> prunedBranches;
+
+    // Search each line for matches
+    for (std::vector<std::string>::const_iterator i = lines.begin(); i != lines.end(); ++i)
+    {
+        std::string line = *i;
+        std::cout << "Testing line: " << line << std::endl;
+    
+        std::regex r(regex);
+        std::smatch matches;
+        std::regex_search(line, matches, r);
+
+        if (matches.size() == 2)
+        {
+            prunedBranches.push_back(matches[1]);
+        }
+    }
 
     return prunedBranches; 
 }
 
 void GitCommand::deleteLocalBranches(const std::vector<std::string>& branches) const
 {
+    std::cout << "Branches to delete:" << std::endl;
     for (std::vector<std::string>::const_iterator i = branches.begin(); i != branches.end(); ++i)
     {
-
+        std::cout << *i << std::endl;
     }
 }

@@ -26,6 +26,15 @@ bool RegexCommand::execute()
     }
 }
 
+std::vector<std::string> splitter(std::string in_pattern, std::string& content){
+    std::vector<std::string> split_content;
+
+    std::regex pattern(in_pattern);
+    std::copy( std::sregex_token_iterator(content.begin(), content.end(), pattern, -1),
+    std::sregex_token_iterator(),back_inserter(split_content));  
+    return split_content;
+}
+
 void RegexCommand::handleMatchCommand() const
 {
     if (this->arguments_.size() < 3)
@@ -35,41 +44,31 @@ void RegexCommand::handleMatchCommand() const
         return;
     }
 
-    std::string input = this->arguments_[1];
-    std::string regex = this->arguments_[2];
+    // TODO: Figure out what to do here. Hacked this. Got tired. Leaving it for now.
 
-    // Check for match
-    bool isMatch = this->isMatch(input, regex);
-    std::cout <<  (isMatch ? "Match" : "No Match") << std::endl;
+    // std::string input = this->arguments_[1];
+    // std::string regex = this->arguments_[2];
 
-    // Print matches
-    this->getMatches(input, regex);
-}
+    std::stringstream ss;
+    ss << "Pruning origin" << std::endl;
+    ss << "URL: git@github.com:stuartthompson/zen.git" << std::endl;
+    ss << " * [pruned] origin/build" << std::endl;
+    ss << " * [pruned] origin/git" << std::endl;
+    std::string input = ss.str();
 
-bool RegexCommand::isMatch(const std::string& input, const std::string& regex) const
-{
-    // std::string re = R"#(
-    //     (\[pruned\]:) (.*)[^\n]$
-    // )#";
+    std::string regex = R"([\]] (.*)$)";
 
-    // std::smatch m;
-    // std::regex_search(input, m, std::regex(re));
-    // if(m.empty()) {
-    //     std::cout << "input=[" << input << "], regex=[" << regex << "]: NO MATCH\n";
-    // } else {
-    //     std::cout << "input=[" << input << "], regex=[" << regex << "]: ";
-    //     std::cout << "prefix=[" << m.prefix() << "] ";
-    //     for(std::size_t n = 0; n < m.size(); ++n)
-    //         std::cout << " m[" << n << "]=[" << m[n] << "] ";
-    //     std::cout << "suffix=[" << m.suffix() << "]\n";
-    // }
+    // Split the input into separate lines
+    std::vector<std::string> lines = splitter(R"(\n)", input);
 
-    // return false;
-    
-    std::regex r(regex);
-    bool match = (regex_match(input, r));
+    for (std::vector<std::string>::const_iterator i = lines.begin(); i != lines.end(); ++i)
+    {
+        std::string line = *i;
+        std::cout << "Testing line: " << line << std::endl;
 
-    return match;
+        // Get matches for this line
+        this->getMatches(line, regex);
+    }
 }
 
 void RegexCommand::getMatches(const std::string& input, const std::string& regex) const
