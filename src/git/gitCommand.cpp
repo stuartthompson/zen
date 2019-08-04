@@ -54,7 +54,6 @@ std::vector<std::string> GitCommand::pruneRemotes() const
     for (std::vector<std::string>::const_iterator i = lines.begin(); i != lines.end(); ++i)
     {
         std::string line = *i;
-        std::cout << "Testing line: " << line << std::endl;
     
         std::regex r(regex);
         std::smatch matches;
