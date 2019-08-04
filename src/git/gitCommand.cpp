@@ -73,7 +73,7 @@ void GitCommand::deleteLocalBranches(const std::vector<std::string>& branches) c
 {
     // TODO: Abstract regex facilities into a separate method or class
     // This regex should put the branch name without the preceeding origin/ into the second match
-    std::string regex = R"(^.*[/](.*)$))";
+    std::string regex = "^.*[/](.*)$";
     std::regex r(regex);
 
     std::cout << "Branches to delete:" << std::endl;
