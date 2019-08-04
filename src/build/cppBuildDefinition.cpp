@@ -195,7 +195,7 @@ const std::string CppBuildDefinition::getLibraryDirectives() const
 const std::string CppBuildDefinition::getOutputDirective() const
 {
     std::stringstream ss;
-    ss << "-o " << this->output_;
+    ss << "-o build/" << this->output_;
     return ss.str();
 }
 

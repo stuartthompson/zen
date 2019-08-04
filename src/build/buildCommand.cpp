@@ -71,6 +71,9 @@ bool BuildCommand::runBuild() const
 
     std::string command = ss.str();
 
+    // Create build dir
+    this->exec("mkdir build");
+
     // Execute the build
     std::cout << command << std::endl;
 
