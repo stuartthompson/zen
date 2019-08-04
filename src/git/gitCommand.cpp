@@ -22,73 +22,80 @@ bool GitCommand::execute()
     std::string subCommand = this->arguments_[0];
     if (subCommand == "prune")
     {
-        std::vector<std::string> branches = this->pruneRemotes();
-        this->deleteLocalBranches(branches);
+        std::vector<std::string> prunedBranches;
+        bool result = this->pruneRemotes(prunedBranches);
+        if (result)
+        {
+            this->deleteLocalBranches(prunedBranches);
+        }
     }
 
     // TODO: Check status of command
     return true;
 }
 
-std::vector<std::string> GitCommand::pruneRemotes() const
+bool GitCommand::pruneRemotes(std::vector<std::string>& prunedBranches) const
 {
+    // Execute git remote prune origin
     std::string pruneResult = this->exec("git remote prune origin");
-    std::cout << pruneResult << std::endl;
     
-    // TODO: Clean this up. There is a lot that can be optimized/refactored here.
-
-    // Split result into separate lines
+    // Split result into separate lines (we're going to skip the first two)
     std::vector<std::string> lines;
     std::regex pattern(R"(\n)");
     std::copy(std::sregex_token_iterator(pruneResult.begin(), pruneResult.end(), pattern, -1),
         std::sregex_token_iterator(),back_inserter(lines));
 
-    // This regex attempts to match anything following a closing ] and a space
-    // The git remote prune origin command returns lines such as * [pruned] origin/branchName
-    std::string regex = R"([\]] (.*)$)";
-
-    // List of pruned branches
-    std::vector<std::string> prunedBranches;
-
-    // Search each line for matches
-    for (std::vector<std::string>::const_iterator i = lines.begin(); i != lines.end(); ++i)
+    // Check to see that any branches were pruned
+    if (lines.size() <= 2)
     {
-        std::string line = *i;
-    
-        std::regex r(regex);
-        std::smatch matches;
-        std::regex_search(line, matches, r);
+        std::cout << "No remote branches were pruned." << std::endl;
+        return false;
+    }
 
+    // This regex matches characters following / (which should be the branch name)
+    // The git remote prune origin command returns lines such as * [pruned] origin/branchName
+    std::string regex = R"(.*/(.*)$)";
+    std::regex r(regex);
+
+    // Build list of pruned branches
+    for (int i = 2; i <= lines.size(); i++)
+    {
+        std::smatch matches;
+        std::string line = lines[i];
+        std::regex_search(line, matches, r);
         if (matches.size() == 2)
         {
+            // Push branch name onto list
             prunedBranches.push_back(matches[1]);
         }
     }
-
-    return prunedBranches; 
+    
+    return true; 
 }
 
 void GitCommand::deleteLocalBranches(const std::vector<std::string>& branches) const
 {
-    // TODO: Abstract regex facilities into a separate method or class
-    // This regex should put the branch name without the preceeding origin/ into the second match
-    std::string regex = "^.*[/](.*)$";
-    std::regex r(regex);
-
-    std::cout << "Branches to delete:" << std::endl;
+    std::cout << "The following local branches will be deleted:" << std::endl;
     for (std::vector<std::string>::const_iterator i = branches.begin(); i != branches.end(); ++i)
     {
-        std::smatch matches;
-        std::regex_search(*i, matches, r);
+        std::cout << " * " << *i << std::endl;
+    }
 
-        if (matches.size() == 2)
+    std::cout << "Press [Y]es to continue or [N]o to cancel." << std::endl;
+
+    char response;
+    std::cin.get(response);
+
+    if (response == 'Y' || response == 'y')
+    {
+        for (std::vector<std::string>::const_iterator i = branches.begin(); i != branches.end(); ++i)
         {
-            // Delete the local branch
-            std::cout << "Deleting branch: " << matches[1] << std::endl;
-            // Build command
+            // Build the command
             std::stringstream ss;
-            ss << "git branch -d " << matches[1];
-            this->exec(ss.str().c_str());
-        }
+            ss << "git branch -d " << *i;
+            std::string delCmd = ss.str();
+            std::cout << delCmd << std::endl; 
+            this->exec(delCmd.c_str());
+        }    
     }
 }
