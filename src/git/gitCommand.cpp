@@ -25,6 +25,9 @@ bool GitCommand::execute()
         std::vector<std::string> branches = this->pruneRemotes();
         this->deleteLocalBranches(branches);
     }
+
+    // TODO: Check status of command
+    return true;
 }
 
 std::vector<std::string> GitCommand::pruneRemotes() const

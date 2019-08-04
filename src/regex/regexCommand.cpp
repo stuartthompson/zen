@@ -1,5 +1,6 @@
 #include <iostream>
 #include <regex>
+#include <sstream>
 
 #include "../../inc/regex/regexCommand.h"
 
@@ -24,6 +25,9 @@ bool RegexCommand::execute()
     {
         this->handleMatchCommand();
     }
+
+    // TODO: Check status of command
+    return true;
 }
 
 std::vector<std::string> splitter(std::string in_pattern, std::string& content){

@@ -77,4 +77,7 @@ bool BuildCommand::runBuild() const
     std::string output = this->exec(command.c_str());
 
     std::cout << "Result: " << output << std::endl;
+
+    // TODO: Check build status
+    return true;
 }
