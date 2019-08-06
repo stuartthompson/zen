@@ -8,6 +8,7 @@
 #include "../inc/build/buildCommand.h"
 #include "../inc/git/gitCommand.h"
 #include "../inc/regex/regexCommand.h"
+#include "../inc/run/runCommand.h"
 
 using json = nlohmann::json;
 
@@ -44,6 +45,11 @@ int main(int argc, char *argv[])
     if (commandName == "regex")
     {
         RegexCommand(commandName, args).execute();
+    }
+
+    if (commandName == "run")
+    {
+        bool result = RunCommand(commandName, args).execute();
     }
 
     return 0;

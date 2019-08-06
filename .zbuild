@@ -13,7 +13,8 @@
         "src/build",
         "src/command",
         "src/git",
-        "src/regex"
+        "src/regex",
+        "src/run"
     ],
     "libraryPaths": [
         "/usr/local/lib"
