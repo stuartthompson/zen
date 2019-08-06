@@ -7,7 +7,7 @@
 #include <boost/filesystem.hpp>
 #include <nlohmann/json.hpp>
 
-#include "../../inc/build/cppBuildDefinition.h"
+#include "../../inc/config/cppBuildConfig.h"
 
 using json = nlohmann::json;
 
@@ -16,12 +16,12 @@ const std::string DEFAULT_COMPILER = "g++";
 const std::string DEFAULT_CFLAGS = "-std=c++17";
 const std::string DEFAULT_OUTPUT = "a.out";
 
-CppBuildDefinition::CppBuildDefinition()
+CppBuildConfig::CppBuildConfig()
     : isValid_(false)
 {
 }
 
-const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
+const bool CppBuildConfig::loadBuildConfig(const std::string& configFilePath)
 {   
     const std::string BuildTypeProperty = "buildType";
     const std::string CompilerProperty = "compiler";
@@ -32,11 +32,11 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
     const std::string LibraryPathsProperty = "libraryPaths";
     const std::string LibrariesProperty = "libraries";
 
-    // Get file stream to build definition file
-    std::ifstream fs(buildDefFilePath.c_str());
+    // Get file stream to build configuration file
+    std::ifstream fs(configFilePath.c_str());
     if (!fs.good())
     {
-        std::cerr << "Unable to open build definition file: " << buildDefFilePath << std::endl;
+        std::cerr << "Unable to open build configuration file: " << configFilePath << std::endl;
         return false;
     }                 
 
@@ -110,7 +110,7 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
     }
     catch (const json::exception& e)
     {
-        std::cerr << "An error occurred parsing the build definition file: " << buildDefFilePath << std::endl;
+        std::cerr << "An error occurred parsing the build definition file: " << configFilePath << std::endl;
         std::cerr << "Error message: " << e.what() << std::endl;        
     }
 
@@ -121,7 +121,7 @@ const bool CppBuildDefinition::loadBuildDef(const std::string& buildDefFilePath)
     return true;
 }
 
-std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
+std::ostream& operator<< (std::ostream& os, const CppBuildConfig& def)
 {
     os << "Build type: " << def.buildType_ << std::endl;
     os << "Compiler: " << def.compiler_ << std::endl;
@@ -139,7 +139,7 @@ std::ostream& operator<< (std::ostream& os, const CppBuildDefinition& def)
     return os;
 }
 
-const std::string CppBuildDefinition::getIncludeDirectives() const
+const std::string CppBuildConfig::getIncludeDirectives() const
 {
     // Iterate the list of include paths
     std::stringstream ss;
@@ -150,7 +150,7 @@ const std::string CppBuildDefinition::getIncludeDirectives() const
     return ss.str();
 }
 
-const std::string CppBuildDefinition::getSourceFileList() const
+const std::string CppBuildConfig::getSourceFileList() const
 {
     std::stringstream ss;
     for (std::vector<std::string>::const_iterator i = this->sources_.begin(); i != this->sources_.end(); ++i)
@@ -178,7 +178,7 @@ const std::string CppBuildDefinition::getSourceFileList() const
     return ss.str();
 }
 
-const std::string CppBuildDefinition::getLibraryDirectives() const
+const std::string CppBuildConfig::getLibraryDirectives() const
 {
     std::stringstream ss;
     for (std::vector<std::string>::const_iterator i = this->libraryPaths_.begin(); i != this->libraryPaths_.end(); ++i)
@@ -192,54 +192,54 @@ const std::string CppBuildDefinition::getLibraryDirectives() const
     return ss.str();
 }
 
-const std::string CppBuildDefinition::getOutputDirective() const
+const std::string CppBuildConfig::getOutputDirective() const
 {
     std::stringstream ss;
     ss << "-o build/" << this->output_;
     return ss.str();
 }
 
-const std::string CppBuildDefinition::getBuildType() const
+const std::string CppBuildConfig::getBuildType() const
 {
     return this->buildType_;
 }
 
-const std::string CppBuildDefinition::getCompiler() const
+const std::string CppBuildConfig::getCompiler() const
 {
     return this->compiler_;
 }
 
-const std::string CppBuildDefinition::getCflags() const
+const std::string CppBuildConfig::getCflags() const
 {
     return this->cflags_;
 }
 
-const std::string CppBuildDefinition::getOutput() const
+const std::string CppBuildConfig::getOutput() const
 {
     return this->output_;
 }
 
-const std::vector<std::string> CppBuildDefinition::getIncludePaths() const
+const std::vector<std::string> CppBuildConfig::getIncludePaths() const
 {
     return this->includePaths_;
 }
 
-const std::vector<std::string> CppBuildDefinition::getSources() const
+const std::vector<std::string> CppBuildConfig::getSources() const
 {
     return this->sources_;
 }
 
-const std::vector<std::string> CppBuildDefinition::getLibraryPaths() const
+const std::vector<std::string> CppBuildConfig::getLibraryPaths() const
 {
     return this->libraryPaths_;
 }
 
-const std::vector<std::string> CppBuildDefinition::getLibraries() const
+const std::vector<std::string> CppBuildConfig::getLibraries() const
 {
     return this->libraries_;
 }
 
-const bool CppBuildDefinition::isValid() const
+const bool CppBuildConfig::isValid() const
 {
     return this->isValid_;
 }

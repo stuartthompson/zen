@@ -4,27 +4,20 @@
 #include <string>
 #include <vector>
 
-class CppBuildDefinition 
+class CppBuildConfig
 {
 public:
     /**
-     * Initializes a new c++ build definition.
+     * Initializes a new c++ build configuration.
      */
-    CppBuildDefinition();
+    CppBuildConfig();
 
     /**
-     * Initializes a new c++ build definition from an existing build definition.
-     * 
-     * @param definition The definition to initialize from.
-     */
-    CppBuildDefinition(const CppBuildDefinition& definition);
-
-    /**
-     * Loads the build definition file.
+     * Loads the build configuration file.
      * 
      * @param filePath The file path of the build definition file.
      */
-    const bool loadBuildDef(const std::string& buildDefFilePath);
+    const bool loadBuildConfig(const std::string& configFilePath);
 
     /**
      * Builds the list of include directives to send to the compiler.
@@ -55,12 +48,12 @@ public:
     const std::string getOutputDirective() const;
 
     /**
-     * Writes a build definition to an output stream.
+     * Writes a build configuration to an output stream.
      * 
      * @param os The output stream to write to.
      * @param def The build definition to write.
      */
-    friend std::ostream& operator<<(std::ostream& os, const CppBuildDefinition& def);
+    friend std::ostream& operator<<(std::ostream& os, const CppBuildConfig& def);
 
     const std::string getBuildType() const;
     const std::string getCompiler() const;

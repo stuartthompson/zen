@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "../config/config.h"
+
 class Command
 {
 public:
@@ -21,6 +23,13 @@ public:
      * @param h The command handler.
      */
     friend std::ostream& operator<<(std::ostream& os, const Command& h);
+
+    /**
+     * Loads the project configuration.
+     * 
+     * @return True if the configuration was loaded successfully, false otherwise.
+     */
+    bool loadConfiguration();
 
     /**
      * Finds the value of a switch argument provided to the command.
@@ -54,4 +63,6 @@ protected:
 
     std::string command_;
     std::vector<std::string> arguments_;
+    std::string configFilePath_;
+    Config config_;
 };
