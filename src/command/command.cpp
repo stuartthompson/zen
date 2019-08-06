@@ -15,6 +15,9 @@ Command::Command(const std::string& command, const std::vector<std::string>& arg
     {
         std::cout << *this;
     }
+
+    // Load configuration
+    this->loadConfiguration();
 }
 
 std::ostream& operator<< (std::ostream& os, const Command& h)
@@ -28,6 +31,23 @@ std::ostream& operator<< (std::ostream& os, const Command& h)
     }
 
     return os;
+}
+
+bool Command::loadConfiguration()
+{
+    // TODO: Move to static const on command
+    const std::string SWITCH_CONFIG_FILE_PATH = "-f";
+
+    // Look for a -f argument (specifies custom project configuration file path)
+    this->configFilePath_ = findSwitchValue(SWITCH_CONFIG_FILE_PATH);
+
+    // Set a default if no build file path was specified
+    if (this->configFilePath_ == "")
+    {
+        this->configFilePath_ = ".zenconfig";
+    }
+
+    this->config_.loadConfig(this->configFilePath_);
 }
 
 std::string Command::findSwitchValue(const std::string& s) const

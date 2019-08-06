@@ -12,6 +12,7 @@
         "src",
         "src/build",
         "src/command",
+        "src/config",
         "src/git",
         "src/regex",
         "src/run"
